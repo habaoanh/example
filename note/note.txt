@@ -1,0 +1,186 @@
+
+# ⚡️ Full-Stack Project Rules (Frontend & Backend)
+
+Đây là workspace chứa cả Frontend (Next.js) và Backend (Node.js/Express).
+Dưới đây là các rule cụ thể cho từng phần. Hãy tự động nhận diện thư mục đang làm việc để áp dụng rule phù hợp.
+
+---
+
+## 🟢 FRONTEND RULES (`/quizBinh2-main`)
+
+**Technology Stack:**
+- Framework: **Next.js 14+ (App Router)**
+- Styling: **Tailwind CSS**
+- Language: **TypeScript (.tsx)**
+- State Management: React Hooks, Context API
+
+**Coding Standards:**
+1.  **Strict Component Separation:**
+    - Mỗi component phải nằm trong một file riêng biệt.
+    - Ưu tiên tái sử dụng component UI trong `src/components/ui`.
+    - Không viết inline style, luôn dùng Utility Classes của Tailwind.
+
+2.  **Responsive Design (Mobile-First):**
+    - Luôn đảm bảo giao diện hiển thị tốt trên Mobile trước.
+    - Sử dụng các breakpoint `sm:`, `md:`, `lg:`, `xl:`, `2xl:` chuẩn của Tailwind.
+    - Với màn hình lớn (2K+), sử dụng `container mx-auto max-w-7xl` và điều chỉnh `text-size`, `padding` phù hợp.
+
+3.  **Next.js Optimization:**
+    - Sử dụng `<Image />` thay vì `<img>`.
+    - Sử dụng `<Link />` thay vì `<a>`.
+    - Component nào cần tương tác/hooks thì phải có `"use client"`.
+    - Server Component là mặc định.
+
+4.  **Error Handling:**
+    - Luôn kiểm tra `suppressHydrationWarning` nếu sửa layout chính.
+    - Xử lý lỗi API gracefuly (hiển thị thông báo toast/lỗi thay vì crash app).
+
+---
+
+## 🔵 BACKEND RULES : ứng dụng học Toán (lớp 6 - 12) theo chương trình mới của Bộ GD&ĐT (đặc biệt là định dạng thi THPTQG 2025), backend dùng express và các dependency sao cho ứng dụng của tôi đáp ứng các tiêu chuẩn: đơn giản, ổn định, bảo mật, hiện đại....
+
+**Technology Stack:**
+- Runtime: **Node.js**
+- Framework: **Express.js**
+- Database: **MongoDB (Mongoose)**
+- Language: **JavaScript (ES6+)**
+
+**Coding Standards:**
+1.  **Project Structure:**
+    - Controllers: Xử lý logic request/response.
+    - Models: Định nghĩa Schema Database.
+    - Routes: Định nghĩa endpoint API.
+    - Middleware: Xử lý auth, error handling, validation.
+
+2.  **Security Best Practices:**
+    - Không hardcode credentials, luôn dùng `process.env`.
+    - Validate input data bằng Joi hoặc express-validator trước khi xử lý.
+    - Sử dụng `helmet` và `cors` đúng cách.
+
+3.  **API Standards:**
+    - Tôn trọng chuẩn RESTful API.
+    - Response luôn trả về JSON thống nhất: `{ success: boolean, data?: any, message?: string }`.
+    - HTTP Status Code phải đúng ngữ nghĩa (200, 201, 400, 401, 404, 500).
+    - Base URL chuẩn: `/api/v1/...` (hoặc `/api/...` tùy config hiện tại).
+
+4.  **Environment:**
+    - Luôn load `dotenv` ngay dòng đầu tiên của `server.js` hoặc entry point (`import 'dotenv/config'`).
+    - Chú ý conflict PORT (thường dùng `5001` để tránh conflict với Frontend/System services).
+5.  - Vui lòng cung cấp các API endpoints để kiểm thử bằng REST Client.
+    - Nếu dùng ai thì dùng mdel: gemini-3-flash-preview
+---
+Bây giờ là một thời điểm tốt để bắt đầu xây dựng logic nghiệp vụ và các API endpoints. Bạn muốn bắt đầu với chức năng nào trước?
+
+Xác thực người dùng? (Đăng ký, Đăng nhập)
+Quản lý câu hỏi? (Tạo, xem, sửa, xóa câu hỏi)
+Quản lý huy hiệu? (Tạo, xem, sửa, xóa huy hiệu)
+-------
+
+## 🤝 INTERGRATION RULES (Kết nối FE - BE)
+
+1.  **CORS & Proxy:**
+    - Backend phải cho phép Frontend domain truy cập.
+    - Thiết lập proxy  để giao tiếp giữa fontend và backend
+
+2.  **Data Consistency:**
+    - Khi sửa Model ở Backend -> Phải cập nhật Interface/Type ở Frontend ngay lập tức.
+    - Khi đổi Route API ở Backend -> Phải cập nhật file gọi API (ví dụ `api.http` hoặc service file) ở Frontend.
+
+---
+
+## 🔒 QUIZ SECURITY & LOGIC (Quan trọng)
+
+1.  **Server-Side Validation:**
+    - Tuyệt đối KHÔNG gửi đáp án đúng (`correctAnswer`) về Client khi đang làm bài.
+    - Việc chấm điểm phải thực hiện trên Server.
+2.  **Anti-Cheat Basic:**
+    - Thêm CSS `user-select: none` vào nội dung câu hỏi để hạn chế copy/paste.
+    - Cảnh báo người dùng nếu rời tab khi đang thi (sử dụng `visibilitychange` event).
+3.  **Rate Limiting:**
+    - Giới hạn số lần submit bài thi trên một khoảng thời gian ngắn để tránh spam.
+
+---
+
+## ✨ MODERN UX/UI (Trải nghiệm người dùng)
+
+1.  **Loading States:**
+    - Sử dụng **Skeleton** thay vì Spinner tròn cho các khối nội dung lớn (danh sách đề thi, bảng xếp hạng).
+2.  **Optimistic UI:**
+    - Hiển thị kết quả "thành công" ngay lập tức khi người dùng thao tác (ví dụ: Lưu bài, Thả tim) trước khi Server phản hồi. Revert lại nếu lỗi.
+3.  **Micro-Interactions:**
+    - Thêm hiệu ứng hover, active nhẹ nhàng cho các nút bấm và thẻ bài học.
+    - Sử dụng Toast Notification (`sonner` hoặc `react-hot-toast`) thay vì `alert()` mặc định.
+
+---
+
+## 🛠 CODE QUALITY & PERFORMANCE
+
+1.  **Strict Types:** hạn chế tối đa `any`. Định nghĩa Interface rõ ràng cho mọi API Response.
+2.  **Database Indexing:** Đánh index cho các trường hay query trong MongoDB (`userId`, `slug`, `status`).
+3.  **Error Boundaries:** Bọc các widget quan trọng (như Khung chat, Bảng xếp hạng) trong Error Boundary để tránh crash toàn trang.
+
+
+---
+
+## 🚨 USER-DEFINED CRITICAL WORKFLOW RULES (MANDATORY)
+
+### 1. 🛡️ Stability First & Component Strategy
+- **IMMUTABLE UI/UX**: Do not change existing functions or UI unless explicitly permitted.
+- **Check Before Create**: Before creating any new component, MUST check if a similar one exists.
+- **Refactor > Create**: Prioritize updating/generalizing existing components over creating new ones.
+- **Atomic Design**: Break down code into reusable components (Button, Card, Header, List, Input) to avoid duplication.
+
+### 2. 🇻🇳 Vietnamese Explanation Protocol (CRITICAL)
+- **EVERY CHANGE MUST BE EXPLAINED IN VIETNAMESE.**
+- Format for every code change:
+  - **Lý do (Why):** Why is this change needed?
+  - **Giải quyết (Solution):** What problem does this specific code solve?
+  - **Lợi ích (Benefit):** Why is this better than the old approach.
+
+### 3. 🚀 ReactJS to Next.js Migration Standard
+- **Strict Tag Replacement**:
+  - `<a>` → `<Link>`
+  - `<img>` → `<Image>`
+- **Architecture**:
+  - Use **App Router**.
+  - Explicitly define `"use client"` or default to Server Components.
+  - Optimize for SEO and Performance in every step.
+
+### 4. 🐢 Step-by-Step Workflow
+- **No Mass Changes**: Work in small, verifiable steps.
+- **Refactor Proposals**: ANY refactor suggestion must include:
+  - **Lý do (Reason)**
+  - **Phạm vi ảnh hưởng (Scope of Impact)**
+
+
+---
+
+## 🚨 REACTJS MIGRATION & COMPONENT REFACTORING PROTOCOL
+
+### 1. 🧹 Data Cleaning & Preparation
+- **REMOVE DARK MODE**: Strip out all dark mode related code/classes from pasted ReactJS code.
+- **Preserve UI/UX**:
+  - **NO className Changes**: Keep classNames exactly as they are (unless removing dark mode).
+  - **No HTML Structure Changes**: Unless absolutely necessary for Next.js compatibility.
+
+### 2. ⚛️ Next.js Strict Migration
+- **Tag Replacement**:
+  - `<a>` → `<Link href="...">` (import from `next/link`)
+  - `<img>` → `<Image src="..." ... />` (import from `next/image`)
+- **Imports**: Ensure correct imports from `next/link` and `next/image`.
+- **Suggestions Only**: If code is incompatible with Next.js (e.g., heavily reliant on `window`), PROPOSE a solution first, do not simple delete.
+
+### 3. 📂 UI Component Strategy (`components/UI`)
+- **Location**: All reusable UI components (Button, Card, Badge, List, Modal, Container) MUST go to `components/UI`.
+- **Refactoring Goals**:
+  - **Generalize**: Detect duplicates and create flexible, reusable components.
+  - **Pure UI**: Components in `components/UI` must NOT contain business logic. They only receive props.
+- **Workflow**:
+  - Check if component exists -> Update/Generalize -> Create new only if necessary.
+  - **Explain**: For every new/refactored component, explain in Vietnamese:
+    - Why it is shared? (Tại sao cần tách?)
+    - Props explanation? (Giải thích Props)
+    - Usage examples? (Ví dụ sử dụng)
+
+### 4. 📝 Explanation Requirements
+- **Vietnamese Only**: All explanations for migration and refactoring must be in Vietnamese.

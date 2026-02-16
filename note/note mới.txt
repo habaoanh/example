@@ -1,0 +1,255 @@
+kiến trúc Frontend Next.js và Backend Express riêng biệt của bạn.
+Frontend: Bạn dùng Next.js để xây dựng giao diện người dùng (các trang như create/page.tsx). Đây là môi trường "Client" (phía trình duyệt).
+Backend: Bạn đã có một Express.js REST API hoàn chỉnh, chạy riêng biệt (ví dụ ở localhost:5000). Backend này tự xử lý logic, kết nối database, và cả việc tạo và xác thực JWT token.
+thiết lập proxy  để giao tiếp giữa fontend và backend
+nếu dùng ai thì dùng mdel: gemini-3-flash-preview
+
+
+Trước khi bắt đầu làm việc, chúng ta thống nhất các nguyên tắc sau:
+
+Yêu cầu chính là phai đảm bảo chức năng không thay đổi, cam kết giữ nguyên 100% giao diện đã thiết kế khi tôi chưa cho phép
+
+1️⃣ Ứng dụng đang hoạt động ổn định
+
+Ứng dụng hiện tại đang chạy ổn định, vì vậy:
+
+Trước khi tạo bất kỳ component mới nào, bạn bắt buộc phải kiểm tra xem:
+
+Component tương tự đã tồn tại hay chưa
+
+Nếu đã tồn tại:
+
+Ưu tiên update, refactor hoặc tổng quát hóa component hiện có
+
+Chỉ tạo component mới khi thực sự cần thiết
+
+2️⃣ Phân tách & tái sử dụng component
+
+Với mọi đoạn code (dù do bạn viết hay tôi paste vào):
+
+Phải kiểm tra và cố gắng tách nhỏ thành các component tái sử dụng như:
+
+Button
+
+Card
+
+Header
+
+Footer
+
+List
+
+Input......
+
+Mục tiêu:
+
+Tránh trùng lặp code
+
+Dễ bảo trì
+
+Dễ mở rộng về sau
+
+3️⃣ Chuyển đổi ReactJS → Next.js đúng chuẩn
+
+Phần lớn code tôi cung cấp là ReactJS thuần
+
+Khi tích hợp vào Next.js, bạn cần:
+
+Chuyển các thẻ ReactJS sang thẻ Next.js tương ứng, ví dụ:
+
+<a> → <Link>
+
+<img> → <Image> (khi phù hợp)
+
+Sử dụng:
+
+App Router
+
+Server Components / Client Components đúng chỗ
+
+Tối ưu:
+
+SEO
+
+Performance
+
+Routing
+
+4️⃣ Giải thích code
+
+Với mọi dòng code bạn thêm hoặc chỉnh sửa:
+
+Phải giải thích bằng tiếng Việt
+
+Nêu rõ:
+
+Vì sao cần thay đổi
+
+Đoạn code đó giải quyết vấn đề gì
+
+Lợi ích so với cách cũ
+
+5️⃣ Phong cách làm việc
+
+Làm việc từng bước
+
+Không thay đổi ồ ạt
+
+Mọi đề xuất refactor đều cần:
+
+Giải thích lý do
+
+Chỉ rõ phạm vi ảnh hưởng
+
+Mục tiêu chung:
+
+Giữ ứng dụng ổn định
+
+Code sạch, tái sử dụng cao
+
+Kiến trúc đúng chuẩn Next.js
+
+Tận dụng tối đa ưu điểm của framework Next.js
+
+
+
+{
+tôi muốn thêm 1 component Hero phù hợp với những thỏa thuận của chúng ta có:
+
+tôi muốn dữ liệu trong trang là dữ liệu mềm, nghĩa là dữ liệu đươc lưu trong database mongo
+
+tôi muốn file lib này lấy navlink và cả footer luôn và lấy all data trong trang home, nên chỉ request 1 lần đến mông là mình lấy đủ dữ liệu
+
+
+
+ }
+
+
+Tôi có các file sau hiện tại được copy từ ReactJS thuần.
+
+Yêu cầu bắt buộc:
+bỏ các code liên quan đến dark mode 
+chuyển primary thành [#2b8cee]
+
+Chuyển file sang đúng chuẩn Next.js (App Router)
+Yêu cầu chính là phai đảm bảo chức năng không thay đổi, cam kết giữ nguyên 100% giao diện đã thiết kế khi tôi chưa cho phép
+
+KHÔNG thay đổi bất kỳ className nào (để đảm bảo giao diện không bị ảnh hưởng)
+
+Thực hiện các chuyển đổi sau:
+
+Tất cả thẻ <a> → <Link> của Next.js
+
+Tất cả thẻ <img> → <Image> của Next.js
+
+Import đúng:
+
+Link từ next/link
+
+Image từ next/image
+
+Lưu ý quan trọng:
+
+Không chỉnh sửa cấu trúc HTML nếu không thật sự cần thiết
+
+Không thêm hoặc xoá class Tailwind / CSS
+
+Không thay đổi UI hiện tại
+
+Ngoài ra:
+
+Nếu phát hiện đoạn code nào không phù hợp với Next.js, hãy đề xuất cách cải thiện (ví dụ: routing, SEO, performance)
+
+Chỉ đề xuất, không tự ý thay đổi nếu không được yêu cầu
+
+Giải thích các thay đổi bằng tiếng Việt
+
+Mục tiêu:
+
+component chạy đúng chuẩn Next.js
+
+Giữ nguyên giao diện 100%
+
+Code rõ ràng, dễ bảo trì
+
+
+Trong quá trình rà soát và refactor thư mục components, hãy thực hiện các yêu cầu sau:
+
+📁 Cấu trúc thư mục
+
+Tất cả các component dùng chung, tái sử dụng nhiều nơi phải được lưu trong thư mục components/UI
+
+Ví dụ:
+
+Button
+
+Card
+
+Badge
+
+List / ListItem
+
+Modal
+
+Section / Container.....
+
+🎯 Mục tiêu
+
+Phát hiện các đoạn code:
+
+Lặp đi lặp lại
+
+Có cùng chức năng nhưng viết ở nhiều component khác nhau
+
+Khái quát hóa (generalize) thành các component UI nhỏ, linh hoạt
+
+🧠 Nguyên tắc bắt buộc
+
+Không tạo component mới nếu đã có component tương tự
+
+Nếu đã tồn tại → nâng cấp component cũ
+
+Không thay đổi giao diện hiện tại
+
+Giữ nguyên className, layout, spacing
+
+Component trong UI:
+
+Không chứa business logic
+
+Nhận dữ liệu qua props
+
+Có thể tái sử dụng ở nhiều màn hình khác nhau
+
+⚙️ Kỹ thuật
+
+Dự án dùng Next.js + React + TailwindCSS
+
+Component phải:
+
+Rõ trách nhiệm
+
+Dễ mở rộng
+
+Phù hợp với App Router
+
+📝 Giải thích
+
+Với mỗi component được đưa vào components/UI:
+
+Giải thích vì sao nó là component dùng chung
+
+Giải thích các props chính
+
+Gợi ý các trường hợp sử dụng
+
+🎯 Kết quả mong muốn
+
+Code gọn hơn
+
+Cấu trúc rõ ràng
+
+Dễ bảo trì
+
+Tái sử dụng tốt cho các tính năng sau này
+
