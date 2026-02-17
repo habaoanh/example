@@ -1,0 +1,21 @@
+
+@baseUrl = http://localhost:5001/api/v1
+@authToken = <PASTE_YOUR_STUDENT_TOKEN_HERE>
+
+### Update User Progress (Add XP and update streak, check for new badges)
+POST {{baseUrl}}/gamification/update-progress
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "xp_earned": 30
+}
+
+### Update User Progress (Another day, more XP, check for new badges)
+POST {{baseUrl}}/gamification/update-progress
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "xp_earned": 25
+}

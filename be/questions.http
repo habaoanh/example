@@ -1,0 +1,71 @@
+
+@baseUrl = http://localhost:5001/api/v1
+@authToken = <PASTE_YOUR_ADMIN_TOKEN_HERE>
+@studentToken = <PASTE_YOUR_STUDENT_TOKEN_HERE>
+
+### Get All Questions (Public/Student View - correct_answer hidden)
+GET {{baseUrl}}/questions
+
+### Get Questions by Filter (Grade 12, Public/Student View)
+GET {{baseUrl}}/questions?grade=12
+
+### Get Questions with Pagination (Page 2, Limit 5)
+GET {{baseUrl}}/questions?page=2&limit=5
+
+### Get Questions with Sorting (Sort by difficulty ascending)
+GET {{baseUrl}}/questions?sort=difficulty
+
+### Get Questions with Sorting (Sort by grade descending and createdAt ascending)
+GET {{baseUrl}}/questions?sort=-grade,createdAt
+
+### Get Questions with Advanced Filtering (Difficulty greater than or equal to 3)
+GET {{baseUrl}}/questions?difficulty[gte]=3
+
+### Get Questions with Multiple Filters (Grade 10, Difficulty 2, Type SELECT)
+GET {{baseUrl}}/questions?grade=10&difficulty=2&type=SELECT
+
+### Get Questions for Admin/Teacher (correct_answer visible if token is ADMIN/TEACHER)
+GET {{baseUrl}}/questions
+Authorization: Bearer {{authToken}}
+
+### Get Specific Question by ID (Public/Student View - correct_answer hidden)
+GET {{baseUrl}}/questions/65a2a2e2b2e2e2e2e2e2e2e2
+
+### Get Specific Question by ID (Admin/Teacher View - correct_answer visible)
+GET {{baseUrl}}/questions/65a2a2e2b2e2e2e2e2e2e2e2
+Authorization: Bearer {{authToken}}
+
+### Create Question (Requires ADMIN/TEACHER Token)
+POST {{baseUrl}}/questions
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "grade": 12,
+  "chapter_id": "GIAI_TICH_12_C1",
+  "difficulty": 2,
+  "type": "SELECT",
+  "content": "Tính đạo hàm của hàm số $y = x^2$.",
+  "options": [
+    {"id": "A", "text": "$y' = x$"},
+    {"id": "B", "text": "$y' = 2x$"},
+    {"id": "C", "text": "$y' = 2$"},
+    {"id": "D", "text": "$y' = 0$"}
+  ],
+  "correct_answer": ["B"],
+  "explanation": "Công thức đạo hàm của $x^n$ là $nx^{n-1}$."
+}
+
+### Update Question (Requires ADMIN/TEACHER Token)
+PUT {{baseUrl}}/questions/65a2a2e2b2e2e2e2e2e2e2e2
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "difficulty": 3,
+  "content": "Tính đạo hàm của hàm số $y = x^3$.
+}
+
+### Delete Question (Requires ADMIN/TEACHER Token)
+DELETE {{baseUrl}}/questions/65a2a2e2b2e2e2e2e2e2e2e2
+Authorization: Bearer {{authToken}}

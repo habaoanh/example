@@ -1,0 +1,47 @@
+
+@baseUrl = http://localhost:5001/api/v1
+@adminToken = <PASTE_YOUR_ADMIN_TOKEN_HERE>
+
+### Create XP Badge (Admin/Teacher only)
+POST {{baseUrl}}/badges
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "XP Hunter I",
+  "icon_url": "https://example.com/xp_hunter_1.png",
+  "requirement_type": "XP_REACHED",
+  "requirement_value": 50
+}
+
+### Create Streak Badge (Admin/Teacher only)
+POST {{baseUrl}}/badges
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "Daily Learner III",
+  "icon_url": "https://example.com/daily_learner_3.png",
+  "requirement_type": "STREAK_REACHetd",
+  "requirement_value": 7
+}
+
+### Get All Badges
+GET {{baseUrl}}/badges
+
+### Get Single Badge
+GET {{baseUrl}}/badges/65a2a2e2b2e2e2e2e2e2e2e2
+
+### Update Badge (Admin/Teacher only)
+PUT {{baseUrl}}/badges/65a2a2e2b2e2e2e2e2e2e2e2
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "XP Hunter II",
+  "requirement_value": 100
+}
+
+### Delete Badge (Admin/Teacher only)
+DELETE {{baseUrl}}/badges/65a2a2e2b2e2e2e2e2e2e2e2
+Authorization: Bearer {{adminToken}}
