@@ -32,6 +32,9 @@ app.get('/', (req, res) => {
 // Port configuration
 const port = process.env.PORT || 5001;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+// Set a longer timeout for the server (e.g., 5 minutes)
+server.setTimeout(300000);

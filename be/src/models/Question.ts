@@ -1,4 +1,3 @@
-
 import mongoose from 'mongoose';
 
 const questionSchema = new mongoose.Schema({
@@ -19,7 +18,10 @@ const questionSchema = new mongoose.Schema({
   }],
 
   correct_answer: [{ type: String }], // Array of correct answers
-  explanation: { type: String } // Markdown + LaTeX
+  explanation: { type: String }, // Markdown + LaTeX
+
+  // Field for storing formulas, keys, or notes for a specific problem type
+  notes: { type: String }
 }, { timestamps: true });
 
 const Question = mongoose.model('Question', questionSchema);

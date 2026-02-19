@@ -12,6 +12,7 @@
   "author": "Google LLC",
   "license": "Apache-2.0",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/jsonwebtoken": "^9.0.10",

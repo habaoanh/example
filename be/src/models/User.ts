@@ -2,10 +2,25 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true, index: true },
+  email: { 
+    type: String, 
+    unique: true, 
+    index: true,
+    sparse: true // Allows null values to not conflict with the unique index
+  },
+  phone_number: { 
+    type: String, 
+    unique: true, 
+    index: true, 
+    sparse: true 
+  },
   password_hash: { type: String, required: true }, // Store bcrypt hash
-  display_name: { type: String, required: true },
+  fullName: { type: String, required: true },
   role: { type: String, enum: ['STUDENT', 'TEACHER', 'ADMIN'], default: 'STUDENT' },
+
+  // Password Reset
+  password_reset_token: { type: String },
+  password_reset_expires: { type: Date },
 
   // Gamification
   total_xp: { type: Number, default: 0 },

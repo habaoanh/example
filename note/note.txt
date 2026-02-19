@@ -68,12 +68,7 @@ Dưới đây là các rule cụ thể cho từng phần. Hãy tự động nh�
     - Chú ý conflict PORT (thường dùng `5001` để tránh conflict với Frontend/System services).
 5.  - Vui lòng cung cấp các API endpoints để kiểm thử bằng REST Client.
     - Nếu dùng ai thì dùng mdel: gemini-3-flash-preview
----
-Bây giờ là một thời điểm tốt để bắt đầu xây dựng logic nghiệp vụ và các API endpoints. Bạn muốn bắt đầu với chức năng nào trước?
 
-Xác thực người dùng? (Đăng ký, Đăng nhập)
-Quản lý câu hỏi? (Tạo, xem, sửa, xóa câu hỏi)
-Quản lý huy hiệu? (Tạo, xem, sửa, xóa huy hiệu)
 -------
 
 ## 🤝 INTERGRATION RULES (Kết nối FE - BE)

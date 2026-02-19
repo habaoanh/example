@@ -5,11 +5,15 @@ import {
   getQuestions, 
   getQuestionById, 
   updateQuestion, 
-  deleteQuestion 
+  deleteQuestion, 
+  analyzeQuestionWithAI
 } from '../controllers/questionController';
 import { protect, authorize } from '../middleware/authMiddleware';
 
 const router = express.Router();
+
+// AI-powered route
+router.post('/analyzebyai', protect, authorize('ADMIN', 'TEACHER'), analyzeQuestionWithAI);
 
 // Public/Student routes (can be filtered by grade, chapter, etc.)
 router.get('/', getQuestions);

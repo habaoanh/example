@@ -114,7 +114,7 @@ Tận dụng tối đa ưu điểm của framework Next.js
 
 
 {
-tôi muốn thêm 1 component Hero phù hợp với những thỏa thuận của chúng ta có:
+tôi muốn thêm 1 component phù hợp với những thỏa thuận của chúng ta có:
 
 tôi muốn dữ liệu trong trang là dữ liệu mềm, nghĩa là dữ liệu đươc lưu trong database mongo
 
@@ -128,8 +128,8 @@ tôi muốn file lib này lấy navlink và cả footer luôn và lấy all data
 Tôi có các file sau hiện tại được copy từ ReactJS thuần.
 
 Yêu cầu bắt buộc:
-bỏ các code liên quan đến dark mode 
-chuyển primary thành [#2b8cee]
+bỏ các code liên quan đến dark mode
+hard code để tránh xung đột code: chuyển primary thành [#2463eb]
 
 Chuyển file sang đúng chuẩn Next.js (App Router)
 Yêu cầu chính là phai đảm bảo chức năng không thay đổi, cam kết giữ nguyên 100% giao diện đã thiết kế khi tôi chưa cho phép
