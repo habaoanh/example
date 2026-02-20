@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import withRoleAuth from '@/hocs/withRoleAuth'; // Correct HOC
-import { analyzeQuestionByAI, saveQuestion } from '@/services/questionService';
+import withRoleAuth from '@/hocs/withRoleAuth';
+import { analyzeQuestionByAI, analyzeQuestionByFile, saveQuestion } from '@/services/questionService';
 import { QuestionData, Difficulty, QuestionOption, GeminiResponse } from '@/types';
 import {
   ArrowLeft,
@@ -23,6 +23,8 @@ import {
   Type as FontIcon,
   Sigma,
   Variable,
+  Upload,
+  ArrowRight,
 } from 'lucide-react';
 import LatexRenderer from '@/components/LatexRenderer';
 
@@ -40,6 +42,7 @@ const Tag: React.FC<{ label: string; onRemove: () => void }> = ({ label, onRemov
 // Represents the question data state within the page
 type PageQuestionData = Omit<QuestionData, 'id'> & {
   imageUrl?: string | null;
+  questionType: 'Trắc nghiệm' | 'Tự luận';
 };
 
 type AIResponse = GeminiResponse & {
@@ -53,6 +56,7 @@ const initialData: PageQuestionData = {
     difficulty: Difficulty.MEDIUM,
     tags: [],
     content: '',
+    questionType: 'Trắc nghiệm',
     options: [
       { id: 'A', label: 'A.', value: '', isCorrect: false },
       { id: 'B', label: 'B.', value: '', isCorrect: false },
@@ -72,6 +76,9 @@ const CreateQuestionPage: React.FC = () => {
   const [isPreview, setIsPreview] = useState(false);
   const [data, setData] = useState<PageQuestionData>(initialData);
   const [newTag, setNewTag] = useState('');
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [questions, setQuestions] = useState<AIResponse[]>([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   const mapDifficulty = (diffString: string | undefined): Difficulty => {
       if (!diffString) return Difficulty.MEDIUM;
@@ -81,54 +88,81 @@ const CreateQuestionPage: React.FC = () => {
       return Difficulty.MEDIUM;
   }
 
+  const setQuestionData = (result: AIResponse) => {
+    setData((prev) => ({
+      ...prev,
+      content: result.content || '',
+      options: result.options
+        ? result.options.map((o, idx) => ({
+            id: String.fromCharCode(65 + idx),
+            label: `${String.fromCharCode(65 + idx)}. `,
+            value: o.value || '',
+            isCorrect: o.isCorrect || false,
+          }))
+        : initialData.options,
+      solution: result.solution || '',
+      notes: result.notes || '',
+      grade: result.grade || prev.grade,
+      topic: result.topic || prev.topic,
+      difficulty: mapDifficulty(result.difficulty),
+      tags: result.tags || [],
+      imageUrl: result.imageUrl || null,
+      questionType: prev.questionType, // Giữ nguyên loại câu hỏi hiện tại
+    }));
+  }
+
   const handleAIAnalyze = async () => {
-    if (!rawInput.trim()) return;
+    if (!rawInput.trim() && !uploadedFile) return;
     setIsAnalyzing(true);
     try {
-      const result: AIResponse = await analyzeQuestionByAI(rawInput);
-      setData((prev) => ({
-        ...prev,
-        content: result.content || '',
-        options: result.options
-          ? result.options.map((o, idx) => ({
-              id: String.fromCharCode(65 + idx),
-              label: `${String.fromCharCode(65 + idx)}. `,
-              value: o.value || '',
-              isCorrect: o.isCorrect || false,
-            }))
-          : initialData.options,
-        solution: result.solution || '',
-        notes: result.notes || '',
-        grade: result.grade || prev.grade,
-        topic: result.topic || prev.topic,
-        difficulty: mapDifficulty(result.difficulty),
-        tags: result.tags || [],
-        imageUrl: result.imageUrl || null, 
-      }));
+        let results: AIResponse[];
+        if (uploadedFile) {
+            results = await analyzeQuestionByFile(uploadedFile);
+        } else {
+            const result = await analyzeQuestionByAI(rawInput);
+            results = [result] 
+        }
+
+        if(results && results.length > 0){
+            setQuestions(results);
+            setCurrentQuestionIndex(0);
+            setQuestionData(results[0]);
+        }
+
     } catch (err) {
       console.error('AI Analysis failed:', err);
-      // You could add a user-facing error notification here
     } finally {
       setIsAnalyzing(false);
     }
   };
+
+  const handleNextQuestion = () => {
+    if (currentQuestionIndex < questions.length - 1) {
+        const nextIndex = currentQuestionIndex + 1;
+        setCurrentQuestionIndex(nextIndex);
+        setQuestionData(questions[nextIndex]);
+    }
+  }
   
   const handleSaveQuestion = async () => {
       setIsSaving(true);
       try {
-          // Here we can omit properties that are not part of the DB schema if necessary
           const questionToSave: Omit<QuestionData, 'id'> = data;
-          
           const savedQuestion = await saveQuestion(questionToSave);
           console.log('Question saved successfully!', savedQuestion);
-          // Optional: Show a success notification (e.g., a toast)
-          // Optional: Redirect the user or clear the form
-          // For now, let's just log it and clear the form
-          setData(initialData);
-          setRawInput('');
+          
+          if (currentQuestionIndex < questions.length - 1) {
+            handleNextQuestion();
+          } else {
+            setData(initialData);
+            setRawInput('');
+            setQuestions([]);
+            setCurrentQuestionIndex(0);
+            setUploadedFile(null);
+          }
+
       } catch (error) {
           console.error('Failed to save question:', error);
-          // Optional: Show an error notification
       } finally {
           setIsSaving(false);
       }
@@ -197,21 +231,45 @@ const CreateQuestionPage: React.FC = () => {
                       className="w-full min-h-[80px] 2k:min-h-[140px] bg-slate-50 border-slate-200 rounded-xl p-3 focus:ring-[#2463eb] focus:border-[#2463eb] text-sm 2k:text-xl placeholder:text-slate-400 resize-none transition-all" 
                       placeholder="Dán nội dung từ PDF, ảnh hoặc text thô để AI tự động chuyển đổi sang LaTeX và trích xuất hình ảnh..."
                     />
-                  <div className="flex justify-end">
-                    <button 
-                      onClick={handleAIAnalyze}
-                      disabled={isAnalyzing}
-                      className="bg-[#2463eb] hover:bg-blue-700 disabled:opacity-50 text-white px-5 py-2 rounded-xl font-bold text-xs 2k:text-lg flex items-center gap-2 transition-all shadow-md shadow-[#2463eb]/30 active:scale-95"
-                    >
-                      <Wand2 size={16} className="2k:w-6 2k:h-6" />
-                      {isAnalyzing ? 'Đang xử lý...' : 'Phân tích thông minh'}
-                    </button>
+                    <div className="flex items-center gap-4">
+                      <label htmlFor="file-upload" className="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold py-2 px-4 rounded-xl inline-flex items-center gap-2">
+                          <Upload size={16} />
+                          <span>Tải lên file Word/LaTeX</span>
+                      </label>
+                      <input id="file-upload" type="file" className="hidden" onChange={(e) => setUploadedFile(e.target.files ? e.target.files[0] : null)} accept=".docx,.tex"/>
+                      {uploadedFile && <p className="text-sm text-slate-500">{uploadedFile.name}</p>}
+                  </div>
+                  <div className="flex justify-between items-center">
+                  {questions.length > 1 && (
+                        <div className="flex items-center gap-4">
+                            <span className="text-sm font-semibold text-slate-600">
+                                Câu hỏi: {currentQuestionIndex + 1} / {questions.length}
+                            </span>
+                            <button
+                                onClick={handleNextQuestion}
+                                className="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-xl font-bold text-xs 2k:text-lg flex items-center gap-2 transition-all"
+                                >
+                                Câu kế tiếp
+                                <ArrowRight size={16} />
+                            </button>
+                        </div>
+                    )}
+                    <div className="flex justify-end flex-grow">
+                      <button 
+                        onClick={handleAIAnalyze}
+                        disabled={isAnalyzing}
+                        className="bg-[#2463eb] hover:bg-blue-700 disabled:opacity-50 text-white px-5 py-2 rounded-xl font-bold text-xs 2k:text-lg flex items-center gap-2 transition-all shadow-md shadow-[#2463eb]/30 active:scale-95"
+                      >
+                        <Wand2 size={16} className="2k:w-6 2k:h-6" />
+                        {isAnalyzing ? 'Đang xử lý...' : 'Phân tích thông minh'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </section>
 
-            {/* Main Question Editor (The rest of the component remains the same) */}
+            {/* Main Question Editor */}
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
               <div className="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-1 pr-4 border-r border-slate-300">
@@ -275,48 +333,46 @@ const CreateQuestionPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Answer Options */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 2k:p-10">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-lg 2k:text-2xl font-semibold flex items-center gap-3">
-                  <CheckCircle2 size={24} className="text-[#2463eb]" />
-                  Phương án lựa chọn
-                </h2>
-                <div className="bg-slate-100 p-1 rounded-xl flex">
-                  <button className="px-5 py-2 bg-white rounded-lg shadow-sm text-sm 2k:text-lg font-medium">Trắc nghiệm</button>
-                  <button className="px-5 py-2 text-slate-500 hover:text-slate-700 text-sm 2k:text-lg font-medium">Tự luận</button>
+            {/* Answer Options (Conditional) */}
+            {data.questionType === 'Trắc nghiệm' && (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 2k:p-10">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-lg 2k:text-2xl font-semibold flex items-center gap-3">
+                    <CheckCircle2 size={24} className="text-[#2463eb]" />
+                    Phương án lựa chọn
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {data.options.map((opt) => (
+                    <div key={opt.id} className="flex items-center gap-4 group">
+                      <input 
+                        checked={opt.isCorrect}
+                        onChange={() => updateOption(opt.id, 'isCorrect', true)}
+                        className="w-6 h-6 text-[#2463eb] border-slate-300 focus:ring-[#2463eb] rounded-full cursor-pointer" 
+                        name="correct-ans" 
+                        type="radio"
+                      />
+                      <div className={`flex-grow flex items-center bg-slate-50 border-2 rounded-2xl px-5 py-4 transition-all ${opt.isCorrect ? 'border-[#2463eb] bg-[#2463eb]/5' : 'border-slate-200'}`}>
+                        <span className={`font-bold mr-4 text-lg ${opt.isCorrect ? 'text-[#2463eb]' : 'text-slate-400'}`}>{opt.label}</span>
+                        {isPreview ? (
+                          <div className="bg-transparent p-0 w-full text-sm 2k:text-xl font-medium">
+                             <LatexRenderer content={opt.value} />
+                          </div>
+                        ) : (
+                          <input 
+                            value={opt.value}
+                            onChange={(e) => updateOption(opt.id, 'value', e.target.value)}
+                            className="bg-transparent border-none p-0 w-full focus:ring-0 text-sm 2k:text-xl font-medium" 
+                            placeholder="Nội dung đáp án..." 
+                            type="text" 
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {data.options.map((opt) => (
-                  <div key={opt.id} className="flex items-center gap-4 group">
-                    <input 
-                      checked={opt.isCorrect}
-                      onChange={() => updateOption(opt.id, 'isCorrect', true)}
-                      className="w-6 h-6 text-[#2463eb] border-slate-300 focus:ring-[#2463eb] rounded-full cursor-pointer" 
-                      name="correct-ans" 
-                      type="radio"
-                    />
-                    <div className={`flex-grow flex items-center bg-slate-50 border-2 rounded-2xl px-5 py-4 transition-all ${opt.isCorrect ? 'border-[#2463eb] bg-[#2463eb]/5' : 'border-slate-200'}`}>
-                      <span className={`font-bold mr-4 text-lg ${opt.isCorrect ? 'text-[#2463eb]' : 'text-slate-400'}`}>{opt.label}</span>
-                      {isPreview ? (
-                        <div className="bg-transparent p-0 w-full text-sm 2k:text-xl font-medium">
-                           <LatexRenderer content={opt.value} />
-                        </div>
-                      ) : (
-                        <input 
-                          value={opt.value}
-                          onChange={(e) => updateOption(opt.id, 'value', e.target.value)}
-                          className="bg-transparent border-none p-0 w-full focus:ring-0 text-sm 2k:text-xl font-medium" 
-                          placeholder="Nội dung đáp án..." 
-                          type="text" 
-                        />
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            )}
 
             {/* AI Insights: Solution & Notes */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -371,6 +427,19 @@ const CreateQuestionPage: React.FC = () => {
                   Thuộc tính & Phân loại
                 </h3>
                 <div className="space-y-6">
+
+                  {/* Question Type */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Loại câu hỏi</label>
+                    <select 
+                      value={data.questionType}
+                      onChange={(e) => setData({...data, questionType: e.target.value as 'Trắc nghiệm' | 'Tự luận'})}
+                      className="w-full bg-slate-50 border-slate-200 rounded-xl py-3 px-4 text-sm 2k:text-xl focus:ring-[#2463eb]"
+                    >
+                      <option>Trắc nghiệm</option>
+                      <option>Tự luận</option>
+                    </select>
+                  </div>
                   
                   {/* Grade */}
                   <div className="space-y-2">
@@ -380,6 +449,10 @@ const CreateQuestionPage: React.FC = () => {
                       onChange={(e) => setData({...data, grade: e.target.value})}
                       className="w-full bg-slate-50 border-slate-200 rounded-xl py-3 px-4 text-sm 2k:text-xl focus:ring-[#2463eb]"
                     >
+                      <option>Khối 6</option>
+                      <option>Khối 7</option>
+                      <option>Khối 8</option>
+                      <option>Khối 9</option>
                       <option>Khối 10</option>
                       <option>Khối 11</option>
                       <option>Khối 12</option>

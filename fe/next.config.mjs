@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        // Using 127.0.0.1 instead of localhost to avoid potential resolution issues in some environments.
+        // The destination is the full URL of the backend API
         destination: 'http://127.0.0.1:5001/api/v1/:path*', 
       },
     ];

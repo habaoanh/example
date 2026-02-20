@@ -1,9 +1,25 @@
+
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2020", // Updated to a more modern ES version
     "module": "commonjs",
-    "sourceMap": true,
-    "outDir": "dist",
-    "esModuleInterop": true
-  }
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true, // Enable strict type-checking
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    // Tell TypeScript to look for type definitions in these directories
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
+  },
+  "include": [
+    "src/**/*.ts" // Make sure to only compile files in the src directory
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

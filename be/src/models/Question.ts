@@ -8,10 +8,10 @@ const questionSchema = new mongoose.Schema({
   chapter_id: { type: String, required: true, index: true },
   difficulty: { type: Number, required: true, min: 1, max: 4 },
 
-  type: { type: String, enum: ['SELECT', 'INPUT', 'INFO_ONLY'], required: true },
+  type: { type: String, enum: ['Trắc nghiệm', 'Tự luận'], required: true },
   content: { type: String, required: true }, // Markdown + LaTeX
 
-  // Options are only for 'SELECT' type, stored as an array of objects
+  // Options are only for 'Trắc nghiệm' type, stored as an array of objects
   options: [{
     id: { type: String }, // e.g., "A", "B"
     text: { type: String }

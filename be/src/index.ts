@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
-import cors from 'cors';
+import cors from 'cors'; // Import the cors middleware
 import connectDB from './config/db';
 import authRoutes from './routes/authRoutes';
 import questionRoutes from './routes/questionRoutes';
@@ -15,8 +15,10 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(helmet());
-app.use(cors());
+app.use(helmet()); 
+// Use cors with default settings, which are quite permissive. 
+// This is okay for now as the Next.js proxy is the main gatekeeper.
+app.use(cors()); 
 app.use(express.json());
 
 // Routes

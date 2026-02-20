@@ -1,20 +1,44 @@
 
-import mongoose from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 
-const userSchema = new mongoose.Schema({
-  email: { 
-    type: String, 
-    unique: true, 
+// Interface defining the User document structure.
+// It extends mongoose.Document to include Mongoose-specific properties like _id, save(), etc.
+export interface IUser extends Document {
+  email?: string | null;
+  phone_number?: string | null;
+  password_hash: string;
+  fullName: string;
+  role: 'STUDENT' | 'TEACHER' | 'ADMIN';
+  password_reset_token?: string;
+  password_reset_expires?: Date;
+  total_xp: number;
+  current_streak: number;
+  longest_streak: number;
+  last_study_date: Date | null;
+  earned_badges: {
+    // Use Types.ObjectId for the actual property type on the document
+    badge_id: Types.ObjectId;
+    unlocked_at: Date;
+  }[];
+  // Timestamps added by Mongoose
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>({
+  email: {
+    type: String,
+    unique: true,
     index: true,
     sparse: true // Allows null values to not conflict with the unique index
   },
-  phone_number: { 
-    type: String, 
-    unique: true, 
-    index: true, 
-    sparse: true 
+  phone_number: {
+    type: String,
+    unique: true,
+    index: true,
+    sparse: true
   },
-  password_hash: { type: String, required: true }, // Store bcrypt hash
+  password_hash: { type: String, required: true },
   fullName: { type: String, required: true },
   role: { type: String, enum: ['STUDENT', 'TEACHER', 'ADMIN'], default: 'STUDENT' },
 
@@ -28,13 +52,16 @@ const userSchema = new mongoose.Schema({
   longest_streak: { type: Number, default: 0 },
   last_study_date: { type: Date, default: null },
 
-  // Replaces the old User_Badges table
+  // Badge relationship
   earned_badges: [{
-    badge_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Badge' },
+    _id: false, // Don't create a separate _id for this subdocument
+    // Use Schema.Types.ObjectId for the schema definition
+    badge_id: { type: Schema.Types.ObjectId, ref: 'Badge' },
     unlocked_at: { type: Date, default: Date.now }
   }]
-}, { timestamps: true }); // Automatically creates createdAt and updatedAt
+}, { timestamps: true }); // Automatically adds createdAt and updatedAt
 
-const User = mongoose.model('User', userSchema);
+// Create and export the User model
+const User = mongoose.model<IUser>('User', userSchema);
 
 export default User;

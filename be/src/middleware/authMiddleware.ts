@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User';
 
 // Add a custom 'user' property to the Express Request type using intersection
-type AuthRequest = Request & {
+export type AuthRequest = Request & {
   user?: any;
 };
 

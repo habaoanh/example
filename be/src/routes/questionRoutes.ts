@@ -6,14 +6,17 @@ import {
   getQuestionById, 
   updateQuestion, 
   deleteQuestion, 
-  analyzeQuestionWithAI
+  analyzeQuestionWithAI,
+  analyzeQuestionByFile,
+  upload
 } from '../controllers/questionController';
 import { protect, authorize } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
-// AI-powered route
+// AI-powered routes
 router.post('/analyzebyai', protect, authorize('ADMIN', 'TEACHER'), analyzeQuestionWithAI);
+router.post('/analyzebyfile', protect, authorize('ADMIN', 'TEACHER'), upload.single('file'), analyzeQuestionByFile);
 
 // Public/Student routes (can be filtered by grade, chapter, etc.)
 router.get('/', getQuestions);

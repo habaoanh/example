@@ -44,6 +44,43 @@ export const analyzeQuestionByAI = async (rawInput: string): Promise<GeminiRespo
   }
 };
 
+// Calls our backend to analyze a file with the AI model
+export const analyzeQuestionByFile = async (file: File): Promise<GeminiResponse[]> => {
+    const token = getAuthToken();
+    if (!token) {
+      throw new Error('Authentication token not found. Please log in again.');
+    }
+  
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    try {
+      const response = await fetch('/api/questions/analyzebyfile', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        try {
+          const errorData = await response.json();
+          throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+        } catch (e) {
+          throw new Error(`HTTP error! Status: ${response.status} - ${response.statusText}`);
+        }
+      }
+  
+      const result = await response.json();
+      return result.data; // Our backend wraps the Gemini response in a 'data' property
+  
+    } catch (error) {
+      console.error("Frontend service error [analyzeQuestionByFile]:", error);
+      throw error; // Re-throw to be handled by the calling component
+    }
+  };
+
 // Calls our backend to save a new question to the database
 export const saveQuestion = async (questionData: Omit<QuestionData, 'id'>): Promise<QuestionData> => {
     const token = getAuthToken();
