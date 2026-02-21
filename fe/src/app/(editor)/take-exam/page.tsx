@@ -103,11 +103,11 @@ export default function TakeExamPage() {
 
     if (currentQuestion.type === 'free-response') {
       return (
-        <div className="flex flex-col gap-8 w-full">
-          <div>
+        <div className="flex flex-row gap-0 w-full">
+          <div className="w-1/2">
             <ProblemStatement question={currentQuestion} {...commonHintProps} />
           </div>
-          <div>
+          <div className="w-1/2">
             <SolutionEditor 
               solution={userAnswers[currentQuestion.id] || ''}
               setSolution={handleAnswerChange}
@@ -149,7 +149,7 @@ export default function TakeExamPage() {
       />
 
       <main className="flex-grow w-full mx-auto px-6 sm:px-12 flex justify-center">
-        <div className="flex flex-row items-start gap-8 w-full max-w-7xl">
+        <div className="flex flex-row items-start gap-0 w-full max-w-7xl">
           {/* Main content area */}
           <div className="flex-grow">
             {renderQuestionContent()}

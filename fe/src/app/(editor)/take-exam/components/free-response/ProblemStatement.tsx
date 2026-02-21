@@ -15,9 +15,10 @@ interface ProblemStatementProps {
 export const ProblemStatement: React.FC<ProblemStatementProps> = ({ question, showConfirm, setShowConfirm, onConfirmHint }) => {
   return (
     <div className="bg-white border border-slate-200 rounded-3xl shadow-lg shadow-slate-200/50 overflow-hidden">
-      <div className="flex flex-col lg:flex-row">
-        {/* Content Column */}
-        <div className={`p-8 lg:p-12 ${question.diagram ? 'w-full lg:w-3/5' : 'w-full'}`}>
+      <div className="flex flex-col">
+
+        {/* Content Column moved to the top */}
+        <div className="p-8 lg:p-12">
           
           {/* Question Header (like multiple-choice) */}
           <div className="flex items-center justify-between mb-8">
@@ -80,13 +81,14 @@ export const ProblemStatement: React.FC<ProblemStatementProps> = ({ question, sh
           </div>
 
         </div>
-
-        {/* Diagram Column */}
+        
+        {/* Diagram at the bottom if it exists */}
         {question.diagram && (
-          <div className="w-full lg:w-2/5 p-8 bg-slate-50 flex items-center justify-center border-t lg:border-t-0 lg:border-l border-slate-200">
+          <div className="p-8 bg-slate-50 flex items-center justify-center border-t border-slate-200">
             <GeometryDiagram />
           </div>
         )}
+
       </div>
     </div>
   );

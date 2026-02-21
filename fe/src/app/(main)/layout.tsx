@@ -1,9 +1,10 @@
 import React from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import Navigation from '@/components/layout/Navigation'; // Import the Server Component
 
-// Layout này dành cho các trang chính của ứng dụng.
-// Nó bao gồm Header và Footer chung cho toàn bộ các trang trong nhóm này.
+// This layout is for the main pages of the application.
+// It includes the shared Header and Footer for all pages in this group.
 export default function MainLayout({
   children,
 }: {
@@ -11,7 +12,10 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Header />
+      {/* Pass the Navigation server component as a child to the Header client component */}
+      <Header>
+        <Navigation />
+      </Header>
       <main>{children}</main>
       <Footer />
     </>

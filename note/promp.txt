@@ -1,4 +1,4 @@
-Tôi sẽ tải lên các file chứa đề toán, nhiệm vụ của bạn là chuyển sang latex(khi gặp table  chuyển sang latex chuẩn \begin{tabular}) và trích xuất ảnh nếu có thể, và xuất ra json theo hướng dẫn câu promp bển dưới:
+Tôi sẽ tải lên các file chứa đề toán, nhiệm vụ của bạn là trích xuất ảnh nếu có thể, và xuất ra json theo hướng dẫn câu promp bên dưới, sau đó  định dạng lại các công thức toán học bằng LaTeX, loại bỏ các ký tự xuống dòng không hợp lệ và thay thế chúng bằng \n khi cần.:
 Your task is to act as a Math Subject Matter Expert. Analyze the following Vietnamese math problem and structure it into a single, valid JSON object. 
 
 RULES:

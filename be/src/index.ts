@@ -8,6 +8,8 @@ import authRoutes from './routes/authRoutes';
 import questionRoutes from './routes/questionRoutes';
 import gamificationRoutes from './routes/gamificationRoutes';
 import badgeRoutes from './routes/badgeRoutes'; // Import badge routes
+import examRoutes from './routes/examRoutes';
+import layoutRoutes from './routes/layoutRoutes'; // <-- Import layout routes
 
 // Connect Database
 connectDB();
@@ -26,6 +28,8 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/questions', questionRoutes);
 app.use('/api/v1/gamification', gamificationRoutes);
 app.use('/api/v1/badges', badgeRoutes); // Use badge routes
+app.use('/api/v1/exams', examRoutes); 
+app.use('/api/v1/layout', layoutRoutes); // <-- Use layout routes
 
 app.get('/', (req, res) => {
   res.json({ success: true, message: 'MathPro API is running...' });

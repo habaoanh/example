@@ -117,7 +117,7 @@ Tận dụng tối đa ưu điểm của framework Next.js
 tôi muốn thêm 1 component phù hợp với những thỏa thuận của chúng ta có:
 tôi muốn tạo trang exams  phù hợp với những thỏa thuận của chúng ta có và có thể bỏ những coponent chúng ta đã có:
 
-tôi muốn dữ liệu trong trang là dữ liệu mềm, nghĩa là dữ liệu đươc lưu trong database mongo
+tôi muốn dữ liệu trong component header là dữ liệu mềm, nghĩa là dữ liệu đươc lấy từ database mongo
 
 tôi muốn file lib này lấy navlink và cả footer luôn và lấy all data trong trang home, nên chỉ request 1 lần đến mông là mình lấy đủ dữ liệu
 
