@@ -1,0 +1,28 @@
+Vậy chúng ta hãy xây dựng lại chính sách cho phù hợp với đối tượng học sinh nhé.
+
+Mục tiêu: Cho học sinh dùng thử và thấy được giá trị của việc luyện tập và nhận được sự trợ giúp từ AI, từ đó khuyến khích họ nâng cấp để học tập hiệu quả hơn.
+
+Luyện tập:
+Giới hạn truy cập: Chỉ được làm một số lượng bài thi/câu hỏi nhất định (ví dụ: các bài thi công khai hoặc các chương đầu tiên).
+Giới hạn số lần làm bài: Có thể giới hạn số lượt làm bài trong ngày (ví dụ: 2-3 lượt/ngày).
+Gợi ý từ AI (AiHint):
+Giới hạn số lượt dùng: Đây là tính năng "ăn tiền" nhất. Chỉ cho phép dùng miễn phí khoảng 3-5 lần gợi ý trên toàn bộ hệ thống. Sau khi hết, sẽ có thông báo mời nâng cấp.
+Xem lời giải:
+Chỉ có thể xem đáp án cuối cùng (ví dụ: A, B, C, D) nhưng không xem được lời giải chi tiết.
+Thống kê & Phân tích:
+Chỉ xem được điểm số của bài thi vừa hoàn thành. Không có các báo cáo phân tích sâu.
+Luyện tập:
+Không giới hạn: Toàn quyền truy cập vào tất cả các câu hỏi và đề thi trong kho dữ liệu.
+Làm bài không giới hạn số lần.
+Gợi ý từ AI (AiHint):
+Sử dụng không giới hạn gợi ý bằng AI khi làm bài.
+Xem lời giải:
+Xem được lời giải chi tiết từng bước cho mọi câu hỏi.
+Thống kê & Phân tích:
+Báo cáo học tập chuyên sâu:
+Theo dõi sự tiến bộ qua thời gian.
+Phân tích điểm mạnh, điểm yếu theo từng chủ đề, từng mức độ (Nhận biết, Vận dụng...).
+Hệ thống sẽ dựa vào đó để gợi ý các bài tập cần củng cố.
+Các quyền lợi khác:
+Trải nghiệm không có quảng cáo.
+Ưu tiên nhận hỗ trợ.

@@ -28,7 +28,7 @@ const createQuestionSchema = Joi.object({
     parent_id: Joi.string().allow(null),
     grade: Joi.number().min(6).max(12).required(),
     chapter_id: Joi.string().required(),
-    difficulty: Joi.number().min(1).max(4).required(),
+    difficulty: Joi.string().valid('Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao').required(),
     type: Joi.string().valid('Trắc nghiệm', 'Tự luận').required(),
     content: Joi.string().required(),
     options: Joi.array().items(Joi.object({
@@ -63,14 +63,14 @@ export const analyzeQuestionWithAI = async (req: AuthRequest, res: Response) => 
     const prompt = `Your task is to act as a Math Subject Matter Expert. Analyze the following Vietnamese math problem and structure it into a single, valid JSON object. 
 
 RULES:
-- Your response MUST be ONLY the JSON object. Do not include any explanatory text, markdown like '''json, or any content outside of the JSON structure.
+- Your response MUST be ONLY the JSON object. Do not include any explanatory text, markdown like '\'\'\'json, or any content outside of the JSON structure.
 - Preserve ALL mathematical formulas in their original LaTeX format, enclosed in $...$ or $$...$$ markers. Do not escape backslashes or newlines within the JSON string values.
 - The JSON object must follow this exact structure:
 {
   "content": "The full question text, with LaTeX preserved.",
   "grade": "String (e.g., 'Khối 12')",
   "topic": "String (e.g., 'Hàm số & Đồ thị')",
-  "difficulty": "One of: 'Dễ', 'Trung bình', 'Khó'",
+  "difficulty": "One of: 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'",
   "tags": ["Array", "of", "strings"],
   "options": [{ "value": "Option text with LaTeX", "isCorrect": boolean }],
   "solution": "Detailed solution with LaTeX",
@@ -160,7 +160,7 @@ export const analyzeQuestionByFile = async (req: AuthRequest, res: Response) => 
         const prompt = `Your task is to act as a Math Subject Matter Expert. Analyze the following Vietnamese text containing multiple math problems and structure it into a single, valid JSON array of objects.
 
 RULES:
-- Your response MUST be ONLY the JSON array. Do not include any explanatory text, markdown like '''json', or any content outside of the JSON structure.
+- Your response MUST be ONLY the JSON array. Do not include any explanatory text, markdown like '\'\'\'json', or any content outside of the JSON structure.
 - Each object in the array represents one distinct math problem.
 - Preserve ALL mathematical formulas in their original LaTeX format, enclosed in $...$ or $$...$$ markers. Do not escape backslashes or newlines within the JSON string values.
 - Each JSON object in the array must follow this exact structure:
@@ -168,7 +168,7 @@ RULES:
   "content": "The full question text, with LaTeX preserved.",
   "grade": "String (e.g., 'Khối 12')",
   "topic": "String (e.g., 'Hàm số & Đồ thị')",
-  "difficulty": "One of: 'Dễ', 'Trung bình', 'Khó'",
+  "difficulty": "One of: 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'",
   "tags": ["Array", "of", "strings"],
   "options": [{ "value": "Option text with LaTeX", "isCorrect": boolean }],
   "solution": "Detailed solution with LaTeX",

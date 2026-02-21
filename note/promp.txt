@@ -1,0 +1,41 @@
+Tôi sẽ tải lên các file chứa đề toán, nhiệm vụ của bạn là chuyển sang latex(khi gặp table  chuyển sang latex chuẩn \begin{tabular}) và trích xuất ảnh nếu có thể, và xuất ra json theo hướng dẫn câu promp bển dưới:
+Your task is to act as a Math Subject Matter Expert. Analyze the following Vietnamese math problem and structure it into a single, valid JSON object. 
+
+RULES:
+- Your response MUST be ONLY the JSON object. Strictly do not wrap the response in any markdown code blocks (like ```json or '''json). Do not include any introductory or explanatory text. The response must start with { and end with }.
+- Preserve ALL mathematical formulas in their original LaTeX format, ALWAYS enclosed in $...$ for inline or $$...$$ for block markers. 
+- IMPORTANT: Ensure all backslashes (\) in LaTeX commands are preserved correctly within the JSON string (e.g., use "\\frac" or ensure the raw "\" is not omitted). Do not escape newlines or other characters in a way that breaks JSON parsing.
+- Tables & Statistics: If the problem contains a table or statistical data, you MUST convert it into a valid LaTeX \begin{tabular} environment.
+- Grouped Question Logic (Câu hỏi chùm):
+    - If the problem has sub-questions (a, b, c...), the main object's type must be 'Câu hỏi chùm'.
+    - All sub-questions must be placed inside the sub_questions array.
+    - Each sub-question in the array must have its own type ('Trắc nghiệm' or 'Tự luận'), content, options, solution, point and difficulty.
+    - If it's a single independent question, sub_questions should be an empty array [].
+
+The JSON object must follow this exact structure:
+{
+  "content": "The main lead-in text or the question itself, with LaTeX formulas in $...$ and tables in \begin{tabular}.",
+  "type": "String, MUST be one of: 'Trắc nghiệm', 'Tự luận', 'Câu hỏi chùm' (Required)",
+  "grade": "String (e.g., 'Khối 12')",
+  "topic": "String (e.g., 'Hàm số & Đồ thị')",
+  "difficulty": "One of: 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'",
+  "point": "Float (Suggested point for the main question, e.g., 1.0)",
+  "tags": ["Array", "of", "strings"],
+  "options": [{ "value": "Option text with LaTeX $...$", "isCorrect": boolean }],
+  "sub_questions": [
+    {
+      "content": "Sub-question text with LaTeX $...$",
+      "type": "'Trắc nghiệm' | 'Tự luận'",
+      "difficulty": "One of: 'Nhận biết', 'Thông hiểu', 'Vận dụng', 'Vận dụng cao'",
+      "point": "Float (Suggested point for this sub-question, e.g., 0.5)",
+      "options": [{ "value": "Option text with LaTeX $...$", "isCorrect": boolean }],
+      "solution": "Detailed solution with LaTeX $...$"
+    }
+  ],
+  "solution": "Detailed solution with LaTeX $...$ (null if sub-questions exist)",
+  "notes": "Key concepts and important notes with LaTeX $...$",
+  "imageUrl": "URL string or null"
+}
+
+Here is the math problem content to analyze:
+[DÁN ĐỀ BÀI CỦA BẠN VÀO ĐÂY]
